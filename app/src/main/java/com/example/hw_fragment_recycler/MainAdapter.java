@@ -15,7 +15,9 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
     public ItemClickListener listener;
 
     public void addApplication (Title title){
+        // он уже вкладывает данные в массив
         data.add(title);
+        // необходимо вызвать этот метод, чтобы recycler мог записать новый item и "внести" его
         notifyDataSetChanged();
     }
 
@@ -29,7 +31,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull MainViewHolder holder, int position) {
-        holder.onBind(data.get(position));
+        holder.onBind(data.get(position), position);
     }
 
     @Override
@@ -40,18 +42,25 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
 
         TextView txtName, txtSurname, txtAge;
         Title title;
+        public int position;   // | 1
 
         public MainViewHolder(@NonNull View itemView){
             super (itemView);
             txtName = itemView.findViewById(R.id.textName);
             txtSurname = itemView.findViewById(R.id.textSurname);
             txtAge = itemView.findViewById(R.id.textAge);
+            // действие при нажатии itemView - айтем ресайклера | 1
+            itemView.setOnClickListener(this);
         }
-        void onBind(Title title){
-            this.title = title;
-            txtName.setText(title.name);
-            txtSurname.setText(title.surname);
-            txtAge.setText(title.age);
+
+        void onBind(Title title, int position){
+            if (title != null) {
+                this.title = title;
+                this.position = position;
+                txtName.setText(title.name);
+                txtSurname.setText(title.surname);
+                txtAge.setText(title.age);
+            }
         }
 
         @Override
@@ -60,8 +69,22 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
                 listener.onItemClick(title, getAdapterPosition());
         }
     }
+    // имзенять поля с помощью позиции (заполняет поля) | 3
+    public void setElement (int position, Title title) {
+        if (title != null) {
+            data.set(position, title);
+            // объявили что позиция item была изменена
+            notifyItemChanged(position);
+        }
+    }
 
+    //метод отправки данных с другого активити | 2
+    public void setOnClickListener(ItemClickListener mListener){
+        this.listener = mListener;
+    }
+
+    // благодаря нему можем обращаться к элементу в списке - вьюшкам | 1
     public interface ItemClickListener {
-        void onItemClick(Title view, int position);
+        void onItemClick(Title title, int position);
     }
 }

@@ -1,5 +1,6 @@
 package com.example.hw_fragment_recycler;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -31,7 +32,7 @@ public class SecondFragment extends Fragment  {
         etSurname = view.findViewById(R.id.etSurname);
         etAge = view.findViewById(R.id.etAge);
         btnSend = view.findViewById(R.id.button);
-
+        // эта кнопка заверщает эизненный цикл Активити 2
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -39,14 +40,23 @@ public class SecondFragment extends Fragment  {
                 String titleSurname = etSurname.getText().toString().trim();
                 String titleAge = etAge.getText().toString().trim();
 
-                MainActivity mainActivity = (MainActivity) getActivity();
+                ActivityTwo activityTwo = (ActivityTwo) getActivity();
                 Title title = new Title();
                 title.setName(titleName);
                 title.setSurname(titleSurname);
                 title.setAge(titleAge);
 
-                mainActivity.sendInfo(title);
+                activityTwo.sendResult(title);
             }
         });
+    }
+
+    // получение новых данных на обработку и возврат с этими данными по кнопке
+    public void getElement (Title title) {
+        if (title != null) {
+            etName.setText(title.name);
+            etSurname.setText(title.surname);
+            etAge.setText(title.age);
+        }
     }
 }
